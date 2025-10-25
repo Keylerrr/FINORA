@@ -5,24 +5,8 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { CalendarDays, Filter } from 'lucide-react';
+import { CalendarDays, Filter, TrendingUp, TrendingDown, Wallet } from 'lucide-react';
 import { Transaction, Category } from '../types';
-import { TooltipProps } from 'recharts';
-
-const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white p-3 border rounded-lg shadow-lg">
-        <p className="text-sm">{`${label}: ${new Intl.NumberFormat('es-CO', {
-          style: 'currency',
-          currency: 'COP',
-          minimumFractionDigits: 0
-        }).format(payload[0].value as number)}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
 
 interface ReportsPageProps {
   transactions: Transaction[];
@@ -94,8 +78,15 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
     .filter(item => item.value > 0);
 
   // Datos para gráfica de barras mensual
+  interface MonthlyData {
+    month: string;
+    income: number;
+    expenses: number;
+  }
+
+  // Datos para gráfica de barras mensual
   const monthlyData = () => {
-    const months = {};
+    const months: { [key: string]: MonthlyData } = {};
     filteredTransactions.forEach(transaction => {
       const month = new Date(transaction.date).toLocaleDateString('es-CO', { month: 'short' });
       if (!months[month]) {
@@ -121,7 +112,7 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
 
   const balance = totalIncome - totalExpenses;
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white p-3 border rounded-lg shadow-lg">
@@ -133,25 +124,27 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2>Reportes y Análisis</h2>
-        <p className="text-muted-foreground">Visualiza el comportamiento de tus finanzas</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="pb-2">
+        <h2 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Reportes y Análisis</h2>
+        <p className="text-muted-foreground mt-1">Visualiza el comportamiento de tus finanzas</p>
       </div>
 
       {/* Filtros */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Filter className="h-5 w-5" />
+      <Card className="shadow-lg border-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+          <CardTitle className="flex items-center space-x-2 text-base sm:text-lg">
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
+            </div>
             <span>Filtros</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label>Tipo de reporte</Label>
-              <Select value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value)}>
+              <Select value={reportType} onValueChange={(value: any) => setReportType(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -184,7 +177,7 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
 
             <div className="space-y-2">
               <Label>Categoría</Label>
-              <Select value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value)}>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -203,29 +196,38 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
       </Card>
 
       {/* Resumen de totales */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-white to-green-50/30">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="text-2xl text-green-600 mb-2">{formatCurrency(totalIncome)}</div>
+              <div className="inline-flex p-3 bg-green-100 rounded-full mb-3">
+                <TrendingUp className="h-6 w-6 text-green-600" />
+              </div>
+              <div className="text-2xl sm:text-3xl text-green-600 mb-2">{formatCurrency(totalIncome)}</div>
               <p className="text-sm text-muted-foreground">Total Ingresos</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-white to-red-50/30">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className="text-2xl text-red-600 mb-2">{formatCurrency(totalExpenses)}</div>
+              <div className="inline-flex p-3 bg-red-100 rounded-full mb-3">
+                <TrendingDown className="h-6 w-6 text-red-600" />
+              </div>
+              <div className="text-2xl sm:text-3xl text-red-600 mb-2">{formatCurrency(totalExpenses)}</div>
               <p className="text-sm text-muted-foreground">Total Gastos</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-white to-blue-50/30">
           <CardContent className="p-6">
             <div className="text-center">
-              <div className={`text-2xl mb-2 ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`inline-flex p-3 rounded-full mb-3 ${balance >= 0 ? 'bg-blue-100' : 'bg-orange-100'}`}>
+                <Wallet className={`h-6 w-6 ${balance >= 0 ? 'text-blue-600' : 'text-orange-600'}`} />
+              </div>
+              <div className={`text-2xl sm:text-3xl mb-2 ${balance >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
                 {formatCurrency(balance)}
               </div>
               <p className="text-sm text-muted-foreground">Balance</p>
@@ -237,13 +239,13 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
       {/* Gráficas según el tipo de reporte */}
       {reportType === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50 border-b">
               <CardTitle>Distribución de Gastos</CardTitle>
             </CardHeader>
             <CardContent>
               {expensesByCategory.length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
                   <PieChart>
                     <Pie
                       data={expensesByCategory}
@@ -269,13 +271,13 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-green-50 border-b">
               <CardTitle>Comparación Mensual</CardTitle>
             </CardHeader>
             <CardContent>
               {monthlyData().length > 0 ? (
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
                   <BarChart data={monthlyData()}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
@@ -302,14 +304,14 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={300} className="sm:h-[400px]">
                 <PieChart>
                   <Pie
                     data={expensesByCategory}
                     cx="50%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={150}
+                    innerRadius={60}
+                    outerRadius={120}
                     paddingAngle={5}
                     dataKey="value"
                   >
@@ -321,9 +323,9 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
                 </PieChart>
               </ResponsiveContainer>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {expensesByCategory.map((category) => (
-                  <div key={category.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={category.name} className="flex items-center justify-between p-2 sm:p-3 border rounded-lg gap-2">
                     <div className="flex items-center space-x-3">
                       <div 
                         className="w-4 h-4 rounded-full"
@@ -353,14 +355,15 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={300} className="sm:h-[400px]">
                 <PieChart>
                   <Pie
                     data={incomeByCategory}
                     cx="50%"
                     cy="50%"
-                    innerRadius={80}
-                    outerRadius={150}
+                    innerRadius={60}
+                    outerRadius={120}
+                    className="sm:innerRadius-[80] sm:outerRadius-[150]"
                     paddingAngle={5}
                     dataKey="value"
                   >
@@ -372,9 +375,9 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
                 </PieChart>
               </ResponsiveContainer>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {incomeByCategory.map((category) => (
-                  <div key={category.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={category.name} className="flex items-center justify-between p-2 sm:p-3 border rounded-lg gap-2">
                     <div className="flex items-center space-x-3">
                       <div 
                         className="w-4 h-4 rounded-full"
@@ -404,7 +407,7 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
           </CardHeader>
           <CardContent>
             {monthlyData().length > 0 ? (
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={300} className="sm:h-[400px]">
                 <LineChart data={monthlyData()}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />

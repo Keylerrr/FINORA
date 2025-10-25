@@ -74,26 +74,29 @@ export function TransactionForm({
   );
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2>Gestión de Transacciones</h2>
-        <p className="text-muted-foreground">Registra tus ingresos y gastos</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="pb-2">
+        <h2 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Gestión de Transacciones</h2>
+        <p className="text-muted-foreground mt-1">Registra tus ingresos y gastos</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="add">Agregar Transacción</TabsTrigger>
-          <TabsTrigger value="list">Ver Transacciones</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="add">Agregar</TabsTrigger>
+          <TabsTrigger value="list">Ver</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="add">
-          <Card>
-            <CardHeader>
-              <CardTitle>Nueva Transacción</CardTitle>
+        <TabsContent value="add" className="animate-fade-in">
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+              <CardTitle className="flex items-center space-x-2">
+                <Plus className="h-5 w-5 text-blue-600" />
+                <span>Nueva Transacción</span>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   <div className="space-y-2">
                     <Label>Tipo de transacción</Label>
                     <Select 
@@ -131,17 +134,17 @@ export function TransactionForm({
                       onValueChange={(value: string) => setFormData(prev => ({ ...prev, categoryId: value }))}
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecciona una categoría" />
+                      <SelectValue placeholder="Selecciona una categoría" />
                       </SelectTrigger>
                       <SelectContent>
-                        {availableCategories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            <div className="flex items-center space-x-2">
-                              <span>{category.icon}</span>
-                              <span>{category.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
+                      {availableCategories.map((category: Category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                        <div className="flex items-center space-x-2">
+                          <span>{category.icon}</span>
+                          <span>{category.name}</span>
+                        </div>
+                        </SelectItem>
+                      ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -172,7 +175,7 @@ export function TransactionForm({
                   />
                 </div>
 
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
                   <Plus className="mr-2 h-4 w-4" />
                   Agregar Transacción
                 </Button>
@@ -181,9 +184,9 @@ export function TransactionForm({
           </Card>
         </TabsContent>
 
-        <TabsContent value="list">
-          <Card>
-            <CardHeader>
+        <TabsContent value="list" className="animate-fade-in">
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-blue-50 border-b">
               <CardTitle>Historial de Transacciones</CardTitle>
             </CardHeader>
             <CardContent>
@@ -192,26 +195,27 @@ export function TransactionForm({
                   sortedTransactions.map((transaction) => {
                     const category = getCategoryInfo(transaction.categoryId);
                     return (
-                      <div key={transaction.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center space-x-4">
-                          <div className="text-2xl">{category?.icon || '💰'}</div>
-                          <div>
-                            <h4>{transaction.description}</h4>
-                            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                              <span>{category?.name}</span>
-                              <span>•</span>
+                      <div key={transaction.id} className="flex items-start sm:items-center justify-between p-3 sm:p-4 border rounded-lg gap-2 hover:shadow-md transition-all duration-200 hover:border-blue-200 bg-white">
+                        <div className="flex items-start sm:items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                          <div className="text-xl sm:text-2xl flex-shrink-0">{category?.icon || '💰'}</div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="truncate">{transaction.description}</h4>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 text-xs sm:text-sm text-muted-foreground">
+                              <span className="truncate">{category?.name}</span>
+                              <span className="hidden sm:inline">•</span>
                               <span>{new Date(transaction.date).toLocaleDateString('es-CO')}</span>
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-3">
-                          <div className={`text-lg ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                        <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                          <div className={`text-sm sm:text-lg whitespace-nowrap ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                             {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                           </div>
                           <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => onDeleteTransaction(transaction.id)}
+                            className="p-1 sm:p-2"
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>

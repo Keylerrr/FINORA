@@ -31,6 +31,7 @@ export interface Goal {
   currentAmount: number;
   targetDate: string;
   userId: string;
+  description?: string;
 }
 
 export type PageType = 'dashboard' | 'transactions' | 'categories' | 'reports' | 'goals' | 'profile';

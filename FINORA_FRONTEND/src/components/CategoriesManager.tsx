@@ -52,17 +52,20 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
   const expenseCategories = categories.filter(c => c.type === 'expense');
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2>Gestión de Categorías</h2>
-        <p className="text-muted-foreground">Organiza tus transacciones con categorías personalizadas</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="pb-2">
+        <h2 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Gestión de Categorías</h2>
+        <p className="text-muted-foreground mt-1">Organiza tus transacciones con categorías personalizadas</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Formulario para agregar categoría */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Crear Nueva Categoría</CardTitle>
+        <Card className="shadow-lg border-0">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <CardTitle className="flex items-center space-x-2">
+              <FolderOpen className="h-5 w-5 text-blue-600" />
+              <span>Crear Nueva Categoría</span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +100,7 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
 
               <div className="space-y-2">
                 <Label>Ícono</Label>
-                <div className="grid grid-cols-8 gap-2">
+                <div className="grid grid-cols-6 sm:grid-cols-8 gap-2">
                   {availableIcons.map((icon) => (
                     <Button
                       key={icon}
@@ -115,7 +118,7 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
 
               <div className="space-y-2">
                 <Label>Color</Label>
-                <div className="grid grid-cols-9 gap-2">
+                <div className="grid grid-cols-6 sm:grid-cols-9 gap-2">
                   {availableColors.map((color) => (
                     <button
                       key={color}
@@ -130,7 +133,7 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
                 <Plus className="mr-2 h-4 w-4" />
                 Crear Categoría
               </Button>
@@ -141,10 +144,12 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
         {/* Lista de categorías existentes */}
         <div className="space-y-6">
           {/* Categorías de ingresos */}
-          <Card>
-            <CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
               <CardTitle className="flex items-center space-x-2">
-                <span className="text-green-600">💰</span>
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <span className="text-green-600">💰</span>
+                </div>
                 <span>Categorías de Ingresos</span>
               </CardTitle>
             </CardHeader>
@@ -152,16 +157,16 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
               <div className="space-y-3">
                 {incomeCategories.length > 0 ? (
                   incomeCategories.map((category) => (
-                    <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
+                    <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg gap-2">
+                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
                         <div 
-                          className="w-8 h-8 rounded-full flex items-center justify-center"
+                          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                           style={{ backgroundColor: category.color + '20' }}
                         >
                           <span>{category.icon}</span>
                         </div>
-                        <span>{category.name}</span>
-                        <Badge variant="secondary" style={{ backgroundColor: category.color + '20', color: category.color }}>
+                        <span className="flex-1 truncate">{category.name}</span>
+                        <Badge variant="secondary" className="flex-shrink-0 text-xs hidden sm:inline-flex" style={{ backgroundColor: category.color + '20', color: category.color }}>
                           Ingreso
                         </Badge>
                       </div>
@@ -169,6 +174,7 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
                         variant="ghost"
                         size="sm"
                         onClick={() => onDeleteCategory(category.id)}
+                        className="p-2 flex-shrink-0"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -185,10 +191,12 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
           </Card>
 
           {/* Categorías de gastos */}
-          <Card>
-            <CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50 border-b">
               <CardTitle className="flex items-center space-x-2">
-                <span className="text-red-600">💸</span>
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <span className="text-red-600">💸</span>
+                </div>
                 <span>Categorías de Gastos</span>
               </CardTitle>
             </CardHeader>
@@ -196,16 +204,16 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
               <div className="space-y-3">
                 {expenseCategories.length > 0 ? (
                   expenseCategories.map((category) => (
-                    <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
+                    <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg gap-2">
+                      <div className="flex items-center space-x-2 sm:space-x-3 flex-1 min-w-0">
                         <div 
-                          className="w-8 h-8 rounded-full flex items-center justify-center"
+                          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                           style={{ backgroundColor: category.color + '20' }}
                         >
                           <span>{category.icon}</span>
                         </div>
-                        <span>{category.name}</span>
-                        <Badge variant="secondary" style={{ backgroundColor: category.color + '20', color: category.color }}>
+                        <span className="flex-1 truncate">{category.name}</span>
+                        <Badge variant="secondary" className="flex-shrink-0 text-xs hidden sm:inline-flex" style={{ backgroundColor: category.color + '20', color: category.color }}>
                           Gasto
                         </Badge>
                       </div>
@@ -213,6 +221,7 @@ export function CategoriesManager({ categories, onAddCategory, onDeleteCategory 
                         variant="ghost"
                         size="sm"
                         onClick={() => onDeleteCategory(category.id)}
+                        className="p-2 flex-shrink-0"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

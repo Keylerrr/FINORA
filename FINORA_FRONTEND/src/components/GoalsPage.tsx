@@ -8,7 +8,7 @@ import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
 import { Plus, Target, Calendar, DollarSign, TrendingUp, Trash2 } from 'lucide-react';
 import { Goal } from '../types';
-import { toast } from 'sonner';
+import { toast } from 'sonner@2.0.3';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,7 +64,7 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
   const getStatusBadge = (goal: Goal) => {
     const progress = (goal.currentAmount / goal.targetAmount) * 100;
     const daysRemaining = calculateDaysRemaining(goal.targetDate);
-   
+    
     if (progress >= 100) {
       return <Badge className="bg-green-100 text-green-800">Completada</Badge>;
     } else if (daysRemaining < 0) {
@@ -87,7 +87,7 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
 
   const handleCreateGoal = (e: React.FormEvent) => {
     e.preventDefault();
-   
+    
     if (!newGoal.title || !newGoal.targetAmount || !newGoal.targetDate) {
       toast.error('Por favor completa todos los campos obligatorios');
       return;
@@ -103,7 +103,8 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
       title: newGoal.title,
       targetAmount: targetAmount,
       currentAmount: 0,
-      targetDate: newGoal.targetDate
+      targetDate: newGoal.targetDate,
+      description: newGoal.description
     });
 
     setNewGoal({
@@ -122,26 +123,29 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pb-2">
         <div>
-          <h2>Mis Metas de Ahorro</h2>
-          <p className="text-muted-foreground">Establece y monitorea tus objetivos financieros</p>
+          <h2 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Mis Metas de Ahorro</h2>
+          <p className="text-muted-foreground mt-1">Establece y monitorea tus objetivos financieros</p>
         </div>
-        <Button onClick={() => setShowForm(!showForm)}>
+        <Button onClick={() => setShowForm(!showForm)} className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
           <Plus className="mr-2 h-4 w-4" />
           Nueva Meta
         </Button>
       </div>
 
       {showForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Crear Nueva Meta</CardTitle>
+        <Card className="shadow-lg border-0 animate-slide-down">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50 border-b">
+            <CardTitle className="flex items-center space-x-2">
+              <Target className="h-5 w-5 text-purple-600" />
+              <span>Crear Nueva Meta</span>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Título de la meta</Label>
                   <Input
@@ -184,11 +188,11 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                 />
               </div>
 
-              <div className="flex space-x-2">
-                <Button type="button" className="flex-1" onClick={handleCreateGoal}>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                <Button type="button" className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg" onClick={handleCreateGoal}>
                   Crear Meta
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
+                <Button type="button" variant="outline" className="sm:w-auto hover:bg-gray-100 transition-colors" onClick={() => setShowForm(false)}>
                   Cancelar
                 </Button>
               </div>
@@ -204,16 +208,16 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
             const progress = (goal.currentAmount / goal.targetAmount) * 100;
             const daysRemaining = calculateDaysRemaining(goal.targetDate);
             const remaining = goal.targetAmount - goal.currentAmount;
-           
+            
             return (
-              <Card key={goal.id} className="overflow-hidden">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
+              <Card key={goal.id} className="overflow-hidden shadow-lg border-0 hover:shadow-xl transition-shadow duration-300">
+                <CardHeader className="bg-gradient-to-r from-purple-50 via-blue-50 to-indigo-50 border-b">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <CardTitle className="flex items-center space-x-2">
-                      <Target className="h-5 w-5" />
-                      <span>{goal.title}</span>
+                      <Target className="h-5 w-5 flex-shrink-0" />
+                      <span className="break-words">{goal.title}</span>
                     </CardTitle>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 self-end sm:self-auto">
                       {getStatusBadge(goal)}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -225,8 +229,7 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                           <AlertDialogHeader>
                             <AlertDialogTitle>¿Eliminar meta?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              ¿Estás seguro de que deseas eliminar la meta "{goal.title}"? 
-                              Esta acción no se puede deshacer.
+                              ¿Estás seguro de que deseas eliminar la meta "{goal.title}"? Esta acción no se puede deshacer.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -241,11 +244,10 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                         </AlertDialogContent>
                       </AlertDialog>
                     </div>
-                    {getStatusBadge(goal)}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                     {/* Progreso visual */}
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
@@ -266,9 +268,9 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                       <div className="flex items-center space-x-2 text-sm">
                         <Calendar className="h-4 w-4" />
                         <span>
-                          {daysRemaining > 0
+                          {daysRemaining > 0 
                             ? `${daysRemaining} días restantes`
-                            : daysRemaining === 0
+                            : daysRemaining === 0 
                               ? 'Vence hoy'
                               : `Venció hace ${Math.abs(daysRemaining)} días`
                           }
@@ -292,15 +294,17 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                           type="number"
                           placeholder="Monto"
                           value={contributions[goal.id] || ''}
-                          onChange={(e) => setContributions(prev => ({
-                            ...prev,
-                            [goal.id]: e.target.value
+                          onChange={(e) => setContributions(prev => ({ 
+                            ...prev, 
+                            [goal.id]: e.target.value 
                           }))}
+                          className="flex-1"
                         />
-                        <Button
-                          size="sm"
+                        <Button 
+                          size="sm" 
                           onClick={() => handleAddContribution(goal.id)}
                           disabled={!contributions[goal.id] || parseInt(contributions[goal.id]) <= 0}
+                          className="flex-shrink-0"
                         >
                           <Plus className="h-4 w-4" />
                         </Button>
@@ -311,7 +315,7 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                   {/* Barra de progreso extendida */}
                   <div className="space-y-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
+                      <div 
                         className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${Math.min(progress, 100)}%` }}
                       />
@@ -339,20 +343,37 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
       </div>
 
       {/* Tips para el ahorro */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-        <CardHeader>
+      <Card className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-0 shadow-lg">
+        <CardHeader className="border-b border-blue-100">
           <CardTitle className="flex items-center space-x-2 text-blue-800">
-            <TrendingUp className="h-5 w-5" />
+            <div className="p-2 bg-blue-100 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-blue-600" />
+            </div>
             <span>Consejos para el Ahorro</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="text-blue-700">
-          <ul className="space-y-2 text-sm">
-            <li>• Establece metas específicas y realistas con fechas claras</li>
-            <li>• Ahorra un porcentaje fijo de tus ingresos cada mes</li>
-            <li>• Automatiza tus ahorros para mantener la consistencia</li>
-            <li>• Revisa y ajusta tus metas según cambien tus circunstancias</li>
-            <li>• Celebra los pequeños logros en el camino hacia tu meta</li>
+        <CardContent className="text-blue-700 pt-6">
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-0.5">💡</span>
+              <span>Establece metas específicas y realistas con fechas claras</span>
+            </li>
+            <li className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-0.5">💡</span>
+              <span>Ahorra un porcentaje fijo de tus ingresos cada mes</span>
+            </li>
+            <li className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-0.5">💡</span>
+              <span>Automatiza tus ahorros para mantener la consistencia</span>
+            </li>
+            <li className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-0.5">💡</span>
+              <span>Revisa y ajusta tus metas según cambien tus circunstancias</span>
+            </li>
+            <li className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-0.5">💡</span>
+              <span>Celebra los pequeños logros en el camino hacia tu meta</span>
+            </li>
           </ul>
         </CardContent>
       </Card>

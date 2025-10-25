@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
-import { Edit, Save, User, Mail, Target, Calendar } from 'lucide-react';
+import { Edit, Save, User, Mail, Target, Calendar, BarChart3, Settings, Sliders } from 'lucide-react';
 import { User as UserType } from '../types';
 
 interface ProfilePageProps {
@@ -43,22 +43,26 @@ export function ProfilePage({ user }: ProfilePageProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2>Mi Perfil</h2>
-        <p className="text-muted-foreground">Gestiona tu información personal y preferencias</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="pb-2">
+        <h2 className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Mi Perfil</h2>
+        <p className="text-muted-foreground mt-1">Gestiona tu información personal y preferencias</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Información principal del perfil */}
         <div className="lg:col-span-2">
-          <Card>
-            <CardHeader>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
               <CardTitle className="flex items-center justify-between">
-                <span>Información Personal</span>
+                <span className="flex items-center space-x-2">
+                  <User className="h-5 w-5 text-blue-600" />
+                  <span>Información Personal</span>
+                </span>
                 <Button
                   variant={isEditing ? "default" : "outline"}
                   size="sm"
+                  className={isEditing ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700" : "hover:bg-blue-50"}
                   onClick={isEditing ? handleSave : () => setIsEditing(true)}
                 >
                   {isEditing ? (
@@ -76,16 +80,16 @@ export function ProfilePage({ user }: ProfilePageProps) {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="flex items-center space-x-6">
-                <Avatar className="h-20 w-20">
-                  <AvatarFallback className="text-2xl">
+              <div className="flex items-center space-x-4 sm:space-x-6">
+                <Avatar className="h-16 w-16 sm:h-20 sm:w-20">
+                  <AvatarFallback className="text-xl sm:text-2xl">
                     {user.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <div className="space-y-1">
-                  <h3>{user.name}</h3>
-                  <p className="text-muted-foreground">{user.email}</p>
-                  <Badge variant="secondary">Usuario activo</Badge>
+                <div className="space-y-1 flex-1 min-w-0">
+                  <h3 className="truncate">{user.name}</h3>
+                  <p className="text-muted-foreground truncate text-sm">{user.email}</p>
+                  <Badge variant="secondary" className="text-xs">Usuario activo</Badge>
                 </div>
               </div>
 
@@ -165,9 +169,12 @@ export function ProfilePage({ user }: ProfilePageProps) {
 
         {/* Panel de estadísticas */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Estadísticas</CardTitle>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 border-b">
+              <CardTitle className="flex items-center space-x-2">
+                <BarChart3 className="h-5 w-5 text-purple-600" />
+                <span>Estadísticas</span>
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
@@ -188,9 +195,12 @@ export function ProfilePage({ user }: ProfilePageProps) {
           </Card>
 
           {/* Sección de configuración de cuenta */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Configuración de Cuenta</CardTitle>
+          <Card className="shadow-lg border-0">
+            <CardHeader className="bg-gradient-to-r from-gray-50 to-slate-50 border-b">
+              <CardTitle className="flex items-center space-x-2">
+                <Settings className="h-5 w-5 text-gray-600" />
+                <span>Configuración de Cuenta</span>
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button variant="outline" className="w-full justify-start">
@@ -216,12 +226,15 @@ export function ProfilePage({ user }: ProfilePageProps) {
       </div>
 
       {/* Sección de preferencias */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Preferencias de la Aplicación</CardTitle>
+      <Card className="shadow-lg border-0">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+          <CardTitle className="flex items-center space-x-2">
+            <Sliders className="h-5 w-5 text-blue-600" />
+            <span>Preferencias de la Aplicación</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-4">
               <h4>Notificaciones</h4>
               <div className="space-y-2">

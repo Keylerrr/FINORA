@@ -31,25 +31,25 @@ export function AuthPage({ onLogin, onRegister }: AuthPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 text-4xl">💰</div>
-          <CardTitle className="text-2xl">FINORA</CardTitle>
-          <CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 sm:p-6 md:p-8">
+      <Card className="w-full max-w-md shadow-xl border-0 overflow-hidden">
+        <CardHeader className="text-center space-y-3 pb-6 bg-gradient-to-b from-white to-gray-50">
+          <div className="mx-auto mb-2 text-5xl sm:text-6xl animate-bounce-slow">💰</div>
+          <CardTitle className="text-2xl sm:text-3xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">FINORA</CardTitle>
+          <CardDescription className="text-sm sm:text-base">
             Tu aplicación de control financiero personal
           </CardDescription>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="pt-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Iniciar Sesión</TabsTrigger>
-              <TabsTrigger value="register">Registrarse</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="login" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600">Iniciar Sesión</TabsTrigger>
+              <TabsTrigger value="register" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-indigo-600">Registrarse</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-4">
+            <TabsContent value="login" className="animate-fade-in">
+              <form onSubmit={handleLogin} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="email">Correo electrónico</Label>
                   <Input
@@ -72,14 +72,14 @@ export function AuthPage({ onLogin, onRegister }: AuthPageProps) {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg mt-6">
                   Iniciar Sesión
                 </Button>
               </form>
             </TabsContent>
             
-            <TabsContent value="register">
-              <form onSubmit={handleRegister} className="space-y-4">
+            <TabsContent value="register" className="animate-fade-in">
+              <form onSubmit={handleRegister} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="name">Nombre completo</Label>
                   <Input
@@ -124,7 +124,7 @@ export function AuthPage({ onLogin, onRegister }: AuthPageProps) {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg mt-6">
                   Crear Cuenta
                 </Button>
               </form>
@@ -132,11 +132,11 @@ export function AuthPage({ onLogin, onRegister }: AuthPageProps) {
           </Tabs>
         </CardContent>
         
-        <CardFooter className="text-center text-sm text-muted-foreground">
+        <CardFooter className="text-center text-sm text-muted-foreground bg-gray-50 py-4">
           {activeTab === 'login' ? (
-            <p>¿No tienes cuenta? <button type="button" onClick={() => setActiveTab('register')} className="text-primary hover:underline">Regístrate aquí</button></p>
+            <p className="w-full">¿No tienes cuenta? <button type="button" onClick={() => setActiveTab('register')} className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors">Regístrate aquí</button></p>
           ) : (
-            <p>¿Ya tienes cuenta? <button type="button" onClick={() => setActiveTab('login')} className="text-primary hover:underline">Inicia sesión</button></p>
+            <p className="w-full">¿Ya tienes cuenta? <button type="button" onClick={() => setActiveTab('login')} className="text-blue-600 hover:text-blue-700 font-medium hover:underline transition-colors">Inicia sesión</button></p>
           )}
         </CardFooter>
       </Card>

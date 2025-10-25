@@ -76,7 +76,7 @@ export function useFinanceData() {
   };
 
   const updateGoal = (id: string, amount: number) => {
-    setGoals(prev => prev.map(goal =>
+    setGoals(prev => prev.map(goal => 
       goal.id === id ? { ...goal, currentAmount: Math.min(goal.targetAmount, goal.currentAmount + amount) } : goal
     ));
   };

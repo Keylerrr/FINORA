@@ -6,15 +6,29 @@ import { Textarea } from './ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
-import { Plus, Target, Calendar, DollarSign, TrendingUp } from 'lucide-react';
+import { Plus, Target, Calendar, DollarSign, TrendingUp, Trash2 } from 'lucide-react';
 import { Goal } from '../types';
+import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from './ui/alert-dialog';
 
 interface GoalsPageProps {
   goals: Goal[];
   onUpdateGoal: (id: string, amount: number) => void;
+  onAddGoal: (goal: Omit<Goal, 'id' | 'userId'>) => void;
+  onDeleteGoal: (id: string) => void;
 }
 
-export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
+export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: GoalsPageProps) {
   const [showForm, setShowForm] = useState(false);
   const [newGoal, setNewGoal] = useState({
     title: '',
@@ -50,7 +64,7 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
   const getStatusBadge = (goal: Goal) => {
     const progress = (goal.currentAmount / goal.targetAmount) * 100;
     const daysRemaining = calculateDaysRemaining(goal.targetDate);
-    
+   
     if (progress >= 100) {
       return <Badge className="bg-green-100 text-green-800">Completada</Badge>;
     } else if (daysRemaining < 0) {
@@ -67,7 +81,44 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
     if (amount > 0) {
       onUpdateGoal(goalId, amount);
       setContributions(prev => ({ ...prev, [goalId]: '' }));
+      toast.success('¡Aporte agregado exitosamente!');
     }
+  };
+
+  const handleCreateGoal = (e: React.FormEvent) => {
+    e.preventDefault();
+   
+    if (!newGoal.title || !newGoal.targetAmount || !newGoal.targetDate) {
+      toast.error('Por favor completa todos los campos obligatorios');
+      return;
+    }
+
+    const targetAmount = parseInt(newGoal.targetAmount);
+    if (targetAmount <= 0) {
+      toast.error('El monto objetivo debe ser mayor a cero');
+      return;
+    }
+
+    onAddGoal({
+      title: newGoal.title,
+      targetAmount: targetAmount,
+      currentAmount: 0,
+      targetDate: newGoal.targetDate
+    });
+
+    setNewGoal({
+      title: '',
+      targetAmount: '',
+      targetDate: '',
+      description: ''
+    });
+    setShowForm(false);
+    toast.success('¡Meta creada exitosamente!');
+  };
+
+  const handleDeleteGoal = (goalId: string, goalTitle: string) => {
+    onDeleteGoal(goalId);
+    toast.success(`Meta "${goalTitle}" eliminada`);
   };
 
   return (
@@ -134,7 +185,7 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
               </div>
 
               <div className="flex space-x-2">
-                <Button type="button" className="flex-1">
+                <Button type="button" className="flex-1" onClick={handleCreateGoal}>
                   Crear Meta
                 </Button>
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>
@@ -153,7 +204,7 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
             const progress = (goal.currentAmount / goal.targetAmount) * 100;
             const daysRemaining = calculateDaysRemaining(goal.targetDate);
             const remaining = goal.targetAmount - goal.currentAmount;
-            
+           
             return (
               <Card key={goal.id} className="overflow-hidden">
                 <CardHeader>
@@ -162,6 +213,34 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
                       <Target className="h-5 w-5" />
                       <span>{goal.title}</span>
                     </CardTitle>
+                    <div className="flex items-center space-x-2">
+                      {getStatusBadge(goal)}
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>¿Eliminar meta?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              ¿Estás seguro de que deseas eliminar la meta "{goal.title}"? 
+                              Esta acción no se puede deshacer.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => handleDeleteGoal(goal.id, goal.title)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Eliminar
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                     {getStatusBadge(goal)}
                   </div>
                 </CardHeader>
@@ -187,9 +266,9 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
                       <div className="flex items-center space-x-2 text-sm">
                         <Calendar className="h-4 w-4" />
                         <span>
-                          {daysRemaining > 0 
+                          {daysRemaining > 0
                             ? `${daysRemaining} días restantes`
-                            : daysRemaining === 0 
+                            : daysRemaining === 0
                               ? 'Vence hoy'
                               : `Venció hace ${Math.abs(daysRemaining)} días`
                           }
@@ -213,13 +292,13 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
                           type="number"
                           placeholder="Monto"
                           value={contributions[goal.id] || ''}
-                          onChange={(e) => setContributions(prev => ({ 
-                            ...prev, 
-                            [goal.id]: e.target.value 
+                          onChange={(e) => setContributions(prev => ({
+                            ...prev,
+                            [goal.id]: e.target.value
                           }))}
                         />
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           onClick={() => handleAddContribution(goal.id)}
                           disabled={!contributions[goal.id] || parseInt(contributions[goal.id]) <= 0}
                         >
@@ -232,7 +311,7 @@ export function GoalsPage({ goals, onUpdateGoal }: GoalsPageProps) {
                   {/* Barra de progreso extendida */}
                   <div className="space-y-2">
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
+                      <div
                         className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${Math.min(progress, 100)}%` }}
                       />

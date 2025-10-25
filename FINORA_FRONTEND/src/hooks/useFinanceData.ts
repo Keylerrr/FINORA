@@ -76,13 +76,23 @@ export function useFinanceData() {
   };
 
   const updateGoal = (id: string, amount: number) => {
-    setGoals((prev: Goal[]) =>
-    prev.map((goal: Goal) =>
-      goal.id === id
-        ? { ...goal, currentAmount: Math.min(goal.targetAmount, goal.currentAmount + amount) }
-        : goal
-    )
-  );
+    setGoals(prev => prev.map(goal =>
+      goal.id === id ? { ...goal, currentAmount: Math.min(goal.targetAmount, goal.currentAmount + amount) } : goal
+    ));
+  };
+
+  const addGoal = (goal: Omit<Goal, 'id' | 'userId'>) => {
+    const newGoal: Goal = {
+      ...goal,
+      id: Date.now().toString(),
+      userId: user?.id || '1',
+      currentAmount: goal.currentAmount || 0
+    };
+    setGoals(prev => [...prev, newGoal]);
+  };
+
+  const deleteGoal = (id: string) => {
+    setGoals(prev => prev.filter(g => g.id !== id));
   };
 
   const login = (email: string, password: string) => {
@@ -116,6 +126,8 @@ export function useFinanceData() {
     deleteTransaction,
     deleteCategory,
     updateGoal,
+    addGoal,
+    deleteGoal,
     login,
     register,
     logout

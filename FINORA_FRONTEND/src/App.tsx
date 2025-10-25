@@ -12,8 +12,8 @@ import { PageType } from './types';
 import { Toaster } from './components/ui/sonner';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard' as PageType);
-  
+  const [currentPage, setCurrentPage] = useState<PageType>('dashboard');
+ 
   const {
     user,
     categories,
@@ -25,6 +25,8 @@ export default function App() {
     deleteTransaction,
     deleteCategory,
     updateGoal,
+    addGoal,
+    deleteGoal,
     login,
     register,
     logout
@@ -38,7 +40,7 @@ export default function App() {
     switch (currentPage) {
       case 'dashboard':
         return (
-          <Dashboard 
+          <Dashboard
             transactions={transactions}
             categories={categories}
             user={user!}
@@ -74,6 +76,8 @@ export default function App() {
           <GoalsPage
             goals={goals}
             onUpdateGoal={updateGoal}
+            onAddGoal={addGoal}
+            onDeleteGoal={deleteGoal}
           />
         );
       case 'profile':
@@ -84,7 +88,7 @@ export default function App() {
         );
       default:
         return (
-          <Dashboard 
+          <Dashboard
             transactions={transactions}
             categories={categories}
             user={user!}

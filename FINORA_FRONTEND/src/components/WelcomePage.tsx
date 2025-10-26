@@ -79,7 +79,11 @@ export function WelcomePage({ onGetStarted }: WelcomePageProps) {
           {/* Header/Logo */}
           <div className="text-center mb-12 sm:mb-16 animate-fade-in">
             <div className="inline-flex items-center justify-center mb-6">
-              <div className="text-6xl sm:text-7xl md:text-8xl animate-bounce-slow">💰</div>
+              <img 
+                src="icon.png" 
+                alt="FINORA" 
+                className="w-[3.75rem] h-[3.75rem] sm:w-[4.5rem] sm:h-[4.5rem] md:w-[6rem] md:h-[6rem] animate-bounce-slow"
+              />
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
               FINORA

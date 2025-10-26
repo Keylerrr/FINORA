@@ -82,7 +82,7 @@ export function MainLayout({ children, currentPage, onPageChange, user, onLogout
                 <SheetContent side="left" className="w-64 p-0 bg-gradient-to-b from-white to-gray-50">
                   <SheetHeader className="p-6 pb-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
                     <SheetTitle className="flex items-center space-x-2">
-                      <div className="text-2xl">💰</div>
+                      <div className="text-2xl">💰1</div>
                       <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">FINORA</span>
                     </SheetTitle>
                   </SheetHeader>
@@ -99,7 +99,7 @@ export function MainLayout({ children, currentPage, onPageChange, user, onLogout
               </Sheet>
 
               <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="text-xl sm:text-2xl animate-pulse-slow">💰</div>
+                <img className="w-5 h-5 sm:w-6 sm:h-6 animate-pulse-slow" src="icon.png" alt="FINORA"></img>
                 <h1 className="text-lg sm:text-xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">FINORA</h1>
               </div>
             </div>

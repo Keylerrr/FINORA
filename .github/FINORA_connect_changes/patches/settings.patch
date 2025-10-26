@@ -1,0 +1,48 @@
+# Patch to insert into PROYECTO_FINORA/settings.py
+
+# 1) INSTALLED_APPS: add corsheaders
+INSTALLED_APPS = [
+    # ... tus apps existentes ...
+    'corsheaders',
+    # ...
+]
+
+# 2) MIDDLEWARE: add cors and whitenoise (cors as high as possible)
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',          # <- añadir
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',     # <- añadir
+    # ... resto del middleware ...
+]
+
+# 3) CORS: allowed origins
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# In dev: http://localhost:3000. In production set CLIENT_URL env var
+CLIENT_URL = os.environ.get('CLIENT_URL', 'http://localhost:3000')
+
+CORS_ALLOWED_ORIGINS = [
+    CLIENT_URL,
+]
+
+# If temporarily allowing all (NOT recommended):
+# CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+# 4) STATICFILES / TEMPLATES to serve React build
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend', 'build', 'static'),
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Ensure TEMPLATES[0]['DIRS'] includes the React build
+try:
+    TEMPLATES[0]['DIRS'] = [os.path.join(BASE_DIR, 'frontend', 'build')]
+except Exception:
+    # If TEMPLATES not defined yet, add this manually
+    pass

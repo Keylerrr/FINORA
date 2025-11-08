@@ -77,29 +77,29 @@ export function ReportsPage({ transactions, categories }: ReportsPageProps) {
     })
     .filter(item => item.value > 0);
 
-  // Datos para gráfica de barras mensual
-  interface MonthlyData {
-    month: string;
-    income: number;
-    expenses: number;
-  }
+  const monthlyData = () => { 
+  const months: { [key: string]: { month: string; income: number; expenses: number } } = {};
+  const monthNames = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+ 
+  filteredTransactions.forEach(transaction => {
+    const dateParts = transaction.date.split('-');
+    const monthIndex = parseInt(dateParts[1], 10) - 1; // 0-indexed
+    const month = monthNames[monthIndex];
+   
+    if (!months[month]) {
+      months[month] = { month, income: 0, expenses: 0 };
+    }
 
-  // Datos para gráfica de barras mensual
-  const monthlyData = () => {
-    const months: { [key: string]: MonthlyData } = {};
-    filteredTransactions.forEach(transaction => {
-      const month = new Date(transaction.date).toLocaleDateString('es-CO', { month: 'short' });
-      if (!months[month]) {
-        months[month] = { month, income: 0, expenses: 0 };
-      }
-      if (transaction.type === 'income') {
-        months[month].income += transaction.amount;
-      } else {
-        months[month].expenses += transaction.amount;
-      }
-    });
-    return Object.values(months);
-  };
+    if (transaction.type === 'income') {
+      months[month].income += transaction.amount;
+    } else {
+      months[month].expenses += transaction.amount;
+    }
+  });
+
+  return Object.values(months);
+};
+
 
   // Calcular totales
   const totalIncome = filteredTransactions

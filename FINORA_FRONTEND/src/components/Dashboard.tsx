@@ -141,7 +141,7 @@ export function Dashboard({ transactions, categories, user, goals }: DashboardPr
                         <div className="min-w-0 flex-1">
                           <p className="text-sm truncate">{transaction.description}</p>
                           <p className="text-xs text-muted-foreground">
-                            {new Date(transaction.date).toLocaleDateString('es-CO')}
+                            {transaction.date.split('-').reverse().join('/')}
                           </p>
                         </div>
                       </div>

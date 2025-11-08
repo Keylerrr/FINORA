@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -7,13 +7,15 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { Badge } from './ui/badge';
 import { Separator } from './ui/separator';
 import { Edit, Save, User, Mail, Target, Calendar, BarChart3, Settings, Sliders } from 'lucide-react';
-import { User as UserType } from '../types';
+import { User as UserType, Transaction, Goal } from '../types';
 
 interface ProfilePageProps {
   user: UserType;
+  transactions: Transaction[];
+  goals: Goal[];
 }
 
-export function ProfilePage({ user }: ProfilePageProps) {
+export function ProfilePage({ user, transactions, goals }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user.name,
@@ -34,13 +36,35 @@ export function ProfilePage({ user }: ProfilePageProps) {
     }).format(amount);
   };
 
-  // Estadísticas mock del usuario
-  const userStats = {
-    memberSince: '2024-01-01',
-    totalTransactions: 24,
-    totalSaved: 450000,
-    goalsCompleted: 1
-  };
+  // Calcular estadísticas dinámicamente
+  const userStats = useMemo(() => {
+    // Total de transacciones
+    const totalTransactions = transactions.length;
+
+    // Total ahorrado (ingresos - gastos)
+    const totalIncome = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+   
+    const totalExpenses = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+   
+    const totalSaved = totalIncome - totalExpenses;
+
+    // Metas completadas (donde currentAmount >= targetAmount)
+    const goalsCompleted = goals.filter(g => g.currentAmount >= g.targetAmount).length;
+
+    // Fecha de creación de la cuenta
+    const memberSince = user.createdAt || new Date().toISOString().split('T')[0];
+
+    return {
+      memberSince,
+      totalTransactions,
+      totalSaved,
+      goalsCompleted
+    };
+  }, [transactions, goals, user.createdAt]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -155,11 +179,12 @@ export function ProfilePage({ user }: ProfilePageProps) {
                   <Label>Miembro desde</Label>
                   <div className="flex items-center space-x-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span>{new Date(userStats.memberSince).toLocaleDateString('es-CO', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}</span>
+                    <span>{(() => {
+                      const [year, month, day] = userStats.memberSince.split('-');
+                      const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                                      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+                      return `${parseInt(day)} de ${months[parseInt(month) - 1]} de ${year}`;
+                    })()}</span>
                   </div>
                 </div>
               </div>
@@ -206,17 +231,17 @@ export function ProfilePage({ user }: ProfilePageProps) {
               <Button variant="outline" className="w-full justify-start">
                 Cambiar contraseña
               </Button>
-              
+             
               <Button variant="outline" className="w-full justify-start">
                 Configurar notificaciones
               </Button>
-              
+             
               <Button variant="outline" className="w-full justify-start">
                 Exportar datos
               </Button>
-              
+             
               <Separator />
-              
+             
               <Button variant="destructive" className="w-full">
                 Eliminar cuenta
               </Button>

@@ -4,9 +4,10 @@ import { User, Category, Transaction, Goal } from '../types';
 // Datos mock para demostración
 const mockUser: User = {
   id: '1',
-  name: 'María García',
-  email: 'maria@ejemplo.com',
-  monthlyGoal: 200000
+  name: 'Keyler Arias',
+  email: 'keylerarias005@gmail.com',
+  monthlyGoal: 200000,
+  createdAt: '2024-01-01'
 };
 
 const mockCategories: Category[] = [
@@ -21,17 +22,11 @@ const mockCategories: Category[] = [
 ];
 
 const mockTransactions: Transaction[] = [
-  { id: '1', amount: 25000, description: 'Almuerzo', categoryId: '1', type: 'expense', date: '2024-01-15', userId: '1' },
-  { id: '2', amount: 8000, description: 'Transmilenio', categoryId: '2', type: 'expense', date: '2024-01-15', userId: '1' },
-  { id: '3', amount: 2500000, description: 'Salario enero', categoryId: '6', type: 'income', date: '2024-01-01', userId: '1' },
-  { id: '4', amount: 18000, description: 'Entrada de cine', categoryId: '3', type: 'expense', date: '2024-01-14', userId: '1' },
-  { id: '5', amount: 45000, description: 'Supermercado', categoryId: '1', type: 'expense', date: '2024-01-13', userId: '1' },
-  { id: '6', amount: 300000, description: 'Proyecto web', categoryId: '7', type: 'income', date: '2024-01-12', userId: '1' }
+  
 ];
 
 const mockGoals: Goal[] = [
-  { id: '1', title: 'Vacaciones', targetAmount: 1500000, currentAmount: 450000, targetDate: '2024-07-01', userId: '1' },
-  { id: '2', title: 'Laptop nueva', targetAmount: 2000000, currentAmount: 800000, targetDate: '2024-05-01', userId: '1' }
+  
 ];
 
 export function useFinanceData() {

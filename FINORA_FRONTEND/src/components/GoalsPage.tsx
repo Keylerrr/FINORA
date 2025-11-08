@@ -8,7 +8,7 @@ import { Progress } from './ui/progress';
 import { Badge } from './ui/badge';
 import { Plus, Target, Calendar, DollarSign, TrendingUp, Trash2 } from 'lucide-react';
 import { Goal } from '../types';
-import { toast } from 'sonner@2.0.3';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -281,7 +281,7 @@ export function GoalsPage({ goals, onUpdateGoal, onAddGoal, onDeleteGoal }: Goal
                         <span>Faltan {formatCurrency(remaining)}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <span>Fecha objetivo: {new Date(goal.targetDate).toLocaleDateString('es-CO')}</span>
+                        <span>Fecha objetivo: {goal.targetDate.split('-').reverse().join('/')}</span>
                       </div>
                     </div>
 

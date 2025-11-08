@@ -4,6 +4,7 @@ export interface User {
   email: string;
   avatar?: string;
   monthlyGoal?: number;
+  createdAt?: string;
 }
 
 export interface Category {

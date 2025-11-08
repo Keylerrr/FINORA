@@ -92,6 +92,8 @@ export default function App() {
         return (
           <ProfilePage
             user={user!}
+            transactions={transactions}
+            goals={goals}
           />
         );
       default:
